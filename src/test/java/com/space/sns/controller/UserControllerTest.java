@@ -3,6 +3,7 @@ package com.space.sns.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.space.sns.controller.request.UserJoinRequest;
 import com.space.sns.controller.request.UserLoginRequest;
+import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
 import com.space.sns.model.User;
 import com.space.sns.service.UserService;
@@ -50,7 +51,7 @@ public class UserControllerTest {
         String userName = "userName";
         String password = "password";
 
-        when(userService.join(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.join(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         mockMvc.perform(post("api/v1/users/join")
                     .contentType(MediaType.APPLICATION_JSON)
