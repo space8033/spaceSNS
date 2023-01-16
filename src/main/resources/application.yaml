@@ -12,3 +12,8 @@ spring.datasource:
   password: dec918cfa9be1240e4fb60d909777c4af39072c2205dfc0fefbfeb7ca1eb9553
   platform: postgres
   driver-class-name: org.postgresql.Driver
+
+jwt:
+  secret-key: Application.spacesns-2023-secretKey
+  #30 DAYS
+  token.expired-time-ms: 2592000000
