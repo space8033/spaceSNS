@@ -1,6 +1,6 @@
-//package com.space.sns.model;
-//
-//public enum UserRole {
-//    ADMIN,
-//    USER
-//}
+package com.space.sns.model;
+
+public enum UserRole {
+    ADMIN,
+    USER
+}
