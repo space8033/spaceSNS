@@ -3,6 +3,7 @@ package com.space.sns.service;
 import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
 import com.space.sns.model.entity.PostEntity;
+import com.space.sns.model.entity.UserEntity;
 import com.space.sns.repository.PostEntityRepository;
 import com.space.sns.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class PostService {
 
     @Transactional
     public void create(String title, String body, String userName) {
-        userEntityRepository.findByUserName(userName).orElseThrow(()
+        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(()
                 -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
 
-        postEntityRepository.save(new PostEntity());
+       postEntityRepository.save(PostEntity.of(title, body, userEntity));
     }
 }

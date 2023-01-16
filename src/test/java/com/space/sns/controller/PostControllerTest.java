@@ -2,11 +2,12 @@ package com.space.sns.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.space.sns.controller.request.PostCreateRequest;
-import com.space.sns.controller.request.UserJoinRequest;
+import com.space.sns.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,6 +24,9 @@ public class PostControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private PostService postService;
 
     @Test
     @WithMockUser // 로그인 되어있는 경우를 표현하는 어노테이션
