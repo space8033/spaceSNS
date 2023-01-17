@@ -2,6 +2,9 @@ package com.space.sns.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.space.sns.controller.request.PostCreateRequest;
+import com.space.sns.controller.request.PostModifyRequest;
+import com.space.sns.exception.ErrorCode;
+import com.space.sns.exception.SnsApplicationException;
 import com.space.sns.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,11 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,7 +36,7 @@ public class PostControllerTest {
     private PostService postService;
 
     @Test
-    @WithMockUser // 로그인 되어있는 경우를 표현하는 어노테이션
+    @WithMockUser
     void 포스트_작성() throws Exception {
         String title = "title";
         String body = "body";
@@ -42,7 +49,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @WithAnonymousUser // 로그인하지 않은 경우를 표현하는 어노테이션
+    @WithAnonymousUser
     void 포스트_작성시_로그인하지_않은경우() throws Exception {
         String title = "title";
         String body = "body";
@@ -52,5 +59,62 @@ public class PostControllerTest {
                         .content(objectMapper.writeValueAsBytes(new PostCreateRequest(title, body)))
                 ).andDo(print())
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정() throws Exception {
+        String title = "title";
+        String body = "body";
+
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, body)))
+                ).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 포스트_수정시_로그인하지_않은경우() throws Exception {
+        String title = "title";
+        String body = "body";
+
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, body)))
+                ).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정시_본인이_아닌경우() throws Exception {
+        String title = "title";
+        String body = "body";
+
+        doThrow(new SnsApplicationException(ErrorCode.INVALID_PERMISSION)).when(postService).modify(eq(title), eq(body),  any(), eq(1));
+
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, body)))
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정시_수정하려는글이_없는경우() throws Exception {
+        String title = "title";
+        String body = "body";
+
+        doThrow(new SnsApplicationException(ErrorCode.POST_NOT_FOUND)).when(postService).modify(eq(title), eq(body),  any(), eq(1));
+
+
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, body)))
+                ).andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
