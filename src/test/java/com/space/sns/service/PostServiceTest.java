@@ -163,15 +163,17 @@ public class PostServiceTest {
 
         when(postEntityRepository.findAll(pageable)).thenReturn(Page.empty());
 
-        Assertions.assertDoesNotThrow(() -> postService.list(pageable);
+        Assertions.assertDoesNotThrow(() -> postService.list(pageable));
     }
 
     @Test
     void 내피드목록요청이_성공한경우(){
         Pageable pageable = mock(Pageable.class);
+        UserEntity user = mock(UserEntity.class);
 
-        when(postEntityRepository.findAllByUser(any(), pageable)).thenReturn(Page.empty());
+        when(userEntityRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(postEntityRepository.findAllByUser(user, pageable)).thenReturn(Page.empty());
 
-        Assertions.assertDoesNotThrow(() -> postService.myList("", pageable);
+        Assertions.assertDoesNotThrow(() -> postService.myList("", pageable));
     }
 }
