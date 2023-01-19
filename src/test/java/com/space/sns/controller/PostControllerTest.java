@@ -149,7 +149,7 @@ public class PostControllerTest {
         mockMvc.perform(delete("/api/v1/posts/1")
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -160,6 +160,6 @@ public class PostControllerTest {
         mockMvc.perform(delete("/api/v1/posts/1")
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 }
