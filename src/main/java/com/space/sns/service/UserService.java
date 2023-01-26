@@ -36,11 +36,11 @@ public class UserService {
 
     @Transactional
     public User join(String userName, String password) {
-        //회원가입 아이디가 이미 있는지 확인
+
         userEntityRepository.findByUserName(userName).ifPresent(it -> {
             throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated", userName));
         });
-        //회원가입 진행
+
         UserEntity userEntity = userEntityRepository.save(UserEntity.of(userName, encoder.encode(password)));
 
         return User.fromEntity(userEntity);
