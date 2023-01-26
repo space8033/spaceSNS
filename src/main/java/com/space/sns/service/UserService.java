@@ -2,8 +2,11 @@ package com.space.sns.service;
 
 import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
+import com.space.sns.model.Alarm;
 import com.space.sns.model.User;
+import com.space.sns.model.entity.AlarmEntity;
 import com.space.sns.model.entity.UserEntity;
+import com.space.sns.repository.AlarmEntityRepository;
 import com.space.sns.repository.UserEntityRepository;
 import com.space.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final BCryptPasswordEncoder encoder;
+    private final AlarmEntityRepository alarmEntityRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -43,20 +47,20 @@ public class UserService {
     }
 
     public String login(String userName, String password) {
-        //회원가입 여부 체크
         UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND,String.format("%s not founded", userName)));
-        //비밀번호 체크
+
         if(!encoder.matches(password, userEntity.getPassword())) {
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
         }
-        //토큰 생성
         String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
 
         return token;
     }
 
-    public Page<Void> alarmList(String userName, Pageable pageable) {
+    public Page<Alarm> alarmList(String userName, Pageable pageable) {
+        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(()
+                -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND,String.format("%s not founded", userName)));
 
-        return Page.empty();
+        return alarmEntityRepository.findAllByUser(userEntity, pageable).map(Alarm::fromEntity);
     }
 }
