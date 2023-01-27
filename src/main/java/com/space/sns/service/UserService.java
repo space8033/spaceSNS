@@ -4,7 +4,6 @@ import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
 import com.space.sns.model.Alarm;
 import com.space.sns.model.User;
-import com.space.sns.model.entity.AlarmEntity;
 import com.space.sns.model.entity.UserEntity;
 import com.space.sns.repository.AlarmEntityRepository;
 import com.space.sns.repository.UserEntityRepository;
@@ -47,7 +46,8 @@ public class UserService {
     }
 
     public String login(String userName, String password) {
-        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND,String.format("%s not founded", userName)));
+        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(()
+                -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND,String.format("%s not founded", userName)));
 
         if(!encoder.matches(password, userEntity.getPassword())) {
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
