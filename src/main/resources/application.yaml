@@ -17,3 +17,5 @@ jwt:
   secret-key: Application.spacesns-2023-secretKey
   #30 DAYS
   token.expired-time-ms: 2592000000
+
+spring.redis.url: redis://:p49fdc05013b9abf3cad2a055ee48a4fe9b4464996119fee3562d9018b1e0268d@ec2-107-22-230-192.compute-1.amazonaws.com:30629

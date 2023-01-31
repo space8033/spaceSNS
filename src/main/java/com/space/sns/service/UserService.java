@@ -6,6 +6,7 @@ import com.space.sns.model.Alarm;
 import com.space.sns.model.User;
 import com.space.sns.model.entity.UserEntity;
 import com.space.sns.repository.AlarmEntityRepository;
+import com.space.sns.repository.UserCacheRepository;
 import com.space.sns.repository.UserEntityRepository;
 import com.space.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,19 @@ public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final BCryptPasswordEncoder encoder;
     private final AlarmEntityRepository alarmEntityRepository;
+    private final UserCacheRepository userCacheRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
-    public User loadByUserName(String userName) {
-        return userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(()
-                -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+    public User loadUserByUserName(String userName) {
+
+        return userCacheRepository.getUser(userName).orElseGet(()
+                -> userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(()
+                -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)))
+        );
     }
 
     @Transactional
@@ -46,15 +51,14 @@ public class UserService {
     }
 
     public String login(String userName, String password) {
-        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(()
-                -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND,String.format("%s not founded", userName)));
+        User user = loadUserByUserName(userName);
+        userCacheRepository.setUser(user);
 
-        if(!encoder.matches(password, userEntity.getPassword())) {
+        if(!encoder.matches(password, user.getPassword())) {
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
         }
-        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
 
-        return token;
+        return JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
     }
 
     public Page<Alarm> alarmList(Integer userId, Pageable pageable) {
