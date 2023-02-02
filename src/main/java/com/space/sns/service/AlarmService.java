@@ -23,18 +23,13 @@ public class AlarmService {
     private final static Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final static String ALARM_NAME = "alarm";
     private final EmitterRepository emitterRepository;
-    private final AlarmEntityRepository alarmEntityRepository;
-    private final UserEntityRepository userEntityRepository;
 
-
-    public void send(AlarmType type, AlarmArgument arg, Integer receiverUserId) {
-        UserEntity user = userEntityRepository.findById(receiverUserId).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND));
-
-        AlarmEntity alarmEntity = alarmEntityRepository.save(AlarmEntity.of(user, type, arg));
-        emitterRepository.get(receiverUserId).ifPresentOrElse(sseEmitter -> {
+    public void send(Integer alarmId, Integer receiverId) {
+        emitterRepository.get(receiverId).ifPresentOrElse(sseEmitter -> {
             try {
-                sseEmitter.send(SseEmitter.event().id(alarmEntity.getId().toString()).name(ALARM_NAME).data("new alarm"));
+                sseEmitter.send(SseEmitter.event().id(alarmId.toString()).name(ALARM_NAME).data("new alarm"));
             }catch (IOException exception) {
+                emitterRepository.delete(receiverId);
                 throw new SnsApplicationException(ErrorCode.ALARM_CONNECT_ERROR);
             }
         }, () -> log.info("No Emitter Founded"));

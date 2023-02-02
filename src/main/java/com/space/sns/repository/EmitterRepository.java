@@ -1,5 +1,6 @@
 package com.space.sns.repository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -16,20 +17,20 @@ public class EmitterRepository {
     public SseEmitter save(Integer userId, SseEmitter sseEmitter) {
         final String key = getKey(userId);
         emitterMap.put(key, sseEmitter);
-        log.info("Set : sseEmitter {}", userId);
+        log.info("Set sseEmitter {}", userId);
 
         return sseEmitter;
     }
 
-    public void delete(Integer userId) {
-        emitterMap.remove(getKey(userId));
-    }
-
     public Optional<SseEmitter> get(Integer userId) {
         final String key = getKey(userId);
-        log.info("Get : sseEmitter {}", userId);
+        log.info("Get sseEmitter {}", userId);
 
         return Optional.ofNullable(emitterMap.get(key));
+    }
+
+    public void delete(Integer userId) {
+        emitterMap.remove(getKey(userId));
     }
 
     private String getKey(Integer userId) {
