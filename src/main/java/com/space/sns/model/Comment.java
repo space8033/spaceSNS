@@ -1,7 +1,6 @@
 package com.space.sns.model;
 
 import com.space.sns.model.entity.CommentEntity;
-import com.space.sns.model.entity.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

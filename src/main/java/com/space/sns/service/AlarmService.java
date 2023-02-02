@@ -2,13 +2,7 @@ package com.space.sns.service;
 
 import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
-import com.space.sns.model.AlarmArgument;
-import com.space.sns.model.AlarmType;
-import com.space.sns.model.entity.AlarmEntity;
-import com.space.sns.model.entity.UserEntity;
-import com.space.sns.repository.AlarmEntityRepository;
 import com.space.sns.repository.EmitterRepository;
-import com.space.sns.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
