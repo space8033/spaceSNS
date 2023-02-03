@@ -18,12 +18,12 @@ public class AlarmService {
     private final static String ALARM_NAME = "alarm";
     private final EmitterRepository emitterRepository;
 
-    public void send(Integer alarmId, Integer receiverId) {
-        emitterRepository.get(receiverId).ifPresentOrElse(sseEmitter -> {
+    public void send(Integer alarmId, Integer userId) {
+        emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
             try {
                 sseEmitter.send(SseEmitter.event().id(alarmId.toString()).name(ALARM_NAME).data("new alarm"));
             }catch (IOException exception) {
-                emitterRepository.delete(receiverId);
+                emitterRepository.delete(userId);
                 throw new SnsApplicationException(ErrorCode.ALARM_CONNECT_ERROR);
             }
         }, () -> log.info("No Emitter Founded"));

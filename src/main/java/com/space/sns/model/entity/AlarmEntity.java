@@ -1,6 +1,6 @@
 package com.space.sns.model.entity;
 
-import com.space.sns.model.AlarmArgument;
+import com.space.sns.model.AlarmArgs;
 import com.space.sns.model.AlarmType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class AlarmEntity {
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "json")
-    private AlarmArgument args;
+    private AlarmArgs args;
     @Column(name = "registered_at")
     private Timestamp registeredAt;
 
@@ -57,11 +57,11 @@ public class AlarmEntity {
         this.updatedAt = Timestamp.from(Instant.now());
     }
 
-    public static AlarmEntity of(UserEntity userEntity, AlarmType alarmType, AlarmArgument argument) {
+    public static AlarmEntity of(UserEntity userEntity, AlarmType alarmType, AlarmArgs args) {
         AlarmEntity entity = new AlarmEntity();
         entity.setUser(userEntity);
         entity.setAlarmType(alarmType);
-        entity.setArgs(argument);
+        entity.setArgs(args);
 
         return entity;
     }

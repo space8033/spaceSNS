@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlarmArgument {
+public class AlarmArgs {
     private Integer fromUserId;
     private Integer targetId;
 }

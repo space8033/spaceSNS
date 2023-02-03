@@ -1,7 +1,7 @@
 package com.space.sns.controller.response;
 
 import com.space.sns.model.Alarm;
-import com.space.sns.model.AlarmArgument;
+import com.space.sns.model.AlarmArgs;
 import com.space.sns.model.AlarmType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class AlarmResponse {
     private Integer id;
     private AlarmType alarmType;
-    private AlarmArgument alarmArgs;
+    private AlarmArgs alarmArgs;
     private String text;
     private Timestamp registeredAt;
     private Timestamp updatedAt;
@@ -24,7 +24,7 @@ public class AlarmResponse {
         return new AlarmResponse(
                 alarm.getId(),
                 alarm.getAlarmType(),
-                alarm.getAlarmArgument(),
+                alarm.getArgs(),
                 alarm.getAlarmType().getAlarmText(),
                 alarm.getRegisteredAt(),
                 alarm.getUpdatedAt(),

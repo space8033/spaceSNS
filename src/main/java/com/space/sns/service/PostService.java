@@ -2,7 +2,7 @@ package com.space.sns.service;
 
 import com.space.sns.exception.ErrorCode;
 import com.space.sns.exception.SnsApplicationException;
-import com.space.sns.model.AlarmArgument;
+import com.space.sns.model.AlarmArgs;
 import com.space.sns.model.AlarmType;
 import com.space.sns.model.Comment;
 import com.space.sns.model.Post;
@@ -80,7 +80,7 @@ public class PostService {
         });
         likeEntityRepository.save(LikeEntity.of(userEntity, postEntity));
 
-        AlarmEntity alarmEntity = alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_LIKE_ON_POST, new AlarmArgument(userEntity.getId(), postEntity.getId())));
+        AlarmEntity alarmEntity = alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
         alarmService.send(alarmEntity.getId(), postEntity.getUser().getId());
     }
 
@@ -97,7 +97,7 @@ public class PostService {
 
         commentEntityRepository.save(CommentEntity.of(userEntity, postEntity, comment));
 
-        AlarmEntity alarmEntity = alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_COMMENT_ON_POST, new AlarmArgument(userEntity.getId(), postEntity.getId())));
+        AlarmEntity alarmEntity = alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
         alarmService.send(alarmEntity.getId(), postEntity.getUser().getId());
     }
 
