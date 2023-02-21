@@ -98,7 +98,7 @@ function Alarm() {
   useEffect(() => {
     handleGetAlarm();
 
-    eventSource = new EventSource("http://snsspace.herokuapp.com/alarm/subscribe?token=" + localStorage.getItem('token'));
+    eventSource = new EventSource("https://snsspace.herokuapp.com/alarm/subscribe?token=" + localStorage.getItem('token'));
 
     setAlarmEvent(eventSource);
 
